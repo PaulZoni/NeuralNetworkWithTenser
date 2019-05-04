@@ -56,12 +56,3 @@ class CharSampler(Callback):
                         self.model.reset_states()
                         res = self.sample_one(T)
                         outf.write('\nT = %.1f\n%s\n' % (T, res[1:]))
-
-
-
-
-
-
-
-
-

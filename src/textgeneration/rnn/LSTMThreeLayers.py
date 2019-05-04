@@ -1,5 +1,5 @@
-from keras.models import Model, Sequential
-from keras.layers import Dense, Dropout, LSTM, TimeDistributed, Activation, Input, Add, merge, Multiply, concatenate
+from keras.models import Model
+from keras.layers import Dense, Dropout, LSTM, TimeDistributed, Activation, Input, concatenate
 
 
 class LSTMThreeLayers:

@@ -1,9 +1,9 @@
 import os
 import numpy as np
-from src.textgeneration.rnn.SimpleLSTM import SimpleLSTM
 from src.textgeneration.rnn.LSTMThreeLayers import LSTMThreeLayers
 from keras.optimizers import adam
-from keras.callbacks import ModelCheckpoint, CSVLogger, Callback
+from keras.callbacks import CSVLogger, Callback
+
 
 INPUT_FILE = '/Users/pavel/PycharmProjects/NeuralNetworkWithTenser/src/textgeneration/text/Jako_pomnishi_ego.txt'
 START_CHAR = '\b'
