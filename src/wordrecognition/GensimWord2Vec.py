@@ -2,7 +2,7 @@ from gensim.corpora.wikicorpus import WikiCorpus
 from gensim.models.phrases import Phrases, Phraser
 from gensim.models.word2vec import Word2Vec
 
-wiki = WikiCorpus('/Users/pavel/PycharmProjects/NeuralNetworkWithTenser/src/word2vec/res/ruwiki-20190120-pages-articles-multistream1.xml-p4p204179.bz2', dictionary=False)
+wiki = WikiCorpus('/Users/pavel/PycharmProjects/NeuralNetworkWithTenser/src/wordrecognition/res/ruwiki-20190120-pages-articles-multistream1.xml-p4p204179.bz2', dictionary=False)
 print('bigram')
 bigram = Phrases(wiki.get_texts())
 print('bigram_transformer')
@@ -32,4 +32,4 @@ model.build_vocab(text_generator_trigram())
 print('train model')
 model.train(text_generator_trigram(), epochs=1, total_examples=model.corpus_count)
 print('save')
-model.save('/Users/pavel/PycharmProjects/NeuralNetworkWithTenser/src/word2vec/savemodal/word2vec_modal')
+model.save('/Users/pavel/PycharmProjects/NeuralNetworkWithTenser/src/wordrecognition/savemodal/word2vec_modal')
