@@ -1,7 +1,8 @@
 from __future__ import print_function, division
 import pandas as pd
 from keras.datasets import fashion_mnist
-from keras.layers import Input, Dense, Reshape, Flatten, BatchNormalization, LeakyReLU
+from keras.layers import Input, Dense, Reshape, Flatten, BatchNormalization,\
+    LeakyReLU, Conv2D, UpSampling2D, MaxPooling2D, Dropout
 from keras.models import Sequential, Model
 from keras.optimizers import Adam
 import numpy as np
@@ -17,7 +18,7 @@ class ImageHelper(object):
         count = 0
         for i in range(5):
             for j in range(5):
-                axs[i, j].imshow(generated[count, :, :, 0], cmap='gray')
+                axs[i, j].imshow(generated[count, :, :, 0])
                 axs[i, j].axis('off')
                 count += 1
         fig.savefig("{}/{}.png".format(directory, epoch))
@@ -33,7 +34,7 @@ class ImageHelper(object):
                 writer.append_data(image)
 
 
-class GANSimple:
+class DCGAN:
 
     def __init__(self, image_shape, generator_input_dim, image_hepler):
         optimizer = Adam(0.0002, 0.5)
@@ -75,29 +76,34 @@ class GANSimple:
         self._image_helper.makegif("generated/")
 
     def _build_generator_model(self):
+
         model_gen = Sequential()
-        model_gen.add(Dense(256, input_dim=self.generator_input_dim))
-        model_gen.add(LeakyReLU(alpha=0.2))
-        model_gen.add(BatchNormalization(momentum=0.8))
-        model_gen.add(Dense(512))
-        model_gen.add(LeakyReLU(alpha=0.2))
-        model_gen.add(BatchNormalization(momentum=0.8))
-        model_gen.add(Dense(1024))
-        model_gen.add(LeakyReLU(alpha=0.2))
-        model_gen.add(BatchNormalization(momentum=0.8))
-        model_gen.add(Dense(np.prod(self.img_shape), activation='tanh'))
-        model_gen.add(Reshape(self.img_shape))
+        model_gen.add(Dense(128 * 7 * 7, input_dim=self.generator_input_dim))
+        model_gen.add(Reshape((7, 7, 128)))
+        model_gen.add(Conv2D(64, (3, 3), activation="relu", padding="same"))
+        model_gen.add(UpSampling2D())
+        model_gen.add(Conv2D(32, (3, 3), activation="relu", padding="same"))
+        model_gen.add(UpSampling2D())
+        model_gen.add(Conv2D(1, (3, 3), activation="tanh", padding="same"))
         self.generator_model = model_gen
+        self.generator_model.summary()
 
     def _build_and_compile_discriminator_model(self, optimizer):
         model_cics = Sequential()
-        model_cics.add(Flatten(input_shape=self.img_shape))
+        model_cics.add(Conv2D(32, (3, 3), padding="same", input_shape=(28, 28, 1)))
+        model_cics.add(LeakyReLU(alpha=0.2))
+        model_cics.add(Conv2D(64, (3, 3), strides=(2, 2), padding="same"))
+        model_cics.add(LeakyReLU(alpha=0.2))
+        model_cics.add(Conv2D(128, (3, 3), strides=(2, 2), padding="same"))
+        model_cics.add(MaxPooling2D(pool_size=(3, 3)))
+        model_cics.add(LeakyReLU(alpha=0.2))
+        model_cics.add(Flatten())
         model_cics.add(Dense(512))
+        model_cics.add(Dropout(0.30))
         model_cics.add(LeakyReLU(alpha=0.2))
-        model_cics.add(Dense(256))
-        model_cics.add(LeakyReLU(alpha=0.2))
-        model_cics.add(Dense(1, activation='sigmoid'))
+        model_cics.add(Dense(1, activation="sigmoid"))
         self.discriminator_model = model_cics
+        self.discriminator_model.summary()
         self.discriminator_model.compile(loss='binary_crossentropy', optimizer=optimizer, metrics=['accuracy'])
         self.discriminator_model.trainable = False
 
@@ -134,5 +140,5 @@ X_train = X / 127.5 - 1.
 X_train = np.expand_dims(X_train, axis=3)
 
 image_helper = ImageHelper()
-generative_advarsial_network = GANSimple(X_train[0].shape, 100, image_helper)
+generative_advarsial_network = DCGAN(X_train[0].shape, 100, image_helper)
 generative_advarsial_network.train(3000, X_train, batch_size=32)

@@ -87,7 +87,7 @@ class AEE_Keras:
         plt.show()
         plt.close(fig)
 
-    def set_trainable(self, model, boolean):
+    def _set_trainable(self, model, boolean):
         for layer in model.layers:
             layer.trainable = boolean
         model.trainable = boolean
@@ -100,23 +100,23 @@ class AEE_Keras:
             print('---------------------------')
             for i in range(int(len(X_train) / batchsize)):
                 print('batch: ' + str(i))
-                self.set_trainable(self.auto_encoder, True)
-                self.set_trainable(self.encoder, True)
-                self.set_trainable(self.decoder, True)
+                self._set_trainable(self.auto_encoder, True)
+                self._set_trainable(self.encoder, True)
+                self._set_trainable(self.decoder, True)
 
                 batch = X_train[i * batchsize:i * batchsize + batchsize]
                 self.auto_encoder.train_on_batch(batch, batch)
 
-                self.set_trainable(self.discriminator, True)
+                self._set_trainable(self.discriminator, True)
                 batchpred = self.encoder.predict(batch)
                 fakepred = np.random.standard_normal((batchsize, 2))
                 discbatch_x = np.concatenate([batchpred, fakepred])
                 discbatch_y = np.concatenate([np.zeros(batchsize), np.ones(batchsize)])
                 self.discriminator.train_on_batch(discbatch_x, discbatch_y)
 
-                self.set_trainable(self.encoder_discriminator, True)
-                self.set_trainable(self.encoder, True)
-                self.set_trainable(self.discriminator, False)
+                self._set_trainable(self.encoder_discriminator, True)
+                self._set_trainable(self.encoder, True)
+                self._set_trainable(self.discriminator, False)
                 self.encoder_discriminator.train_on_batch(batch, np.ones(batchsize))
 
             print("AutoEncoder Loss:", self.auto_encoder.evaluate(X_test, X_test, verbose=0))
