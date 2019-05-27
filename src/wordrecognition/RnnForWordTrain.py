@@ -1,17 +1,15 @@
-from keras.datasets import imdb
 from keras.preprocessing import sequence
-from src.wordrecognition.nn.ConvForWord import ConvForWord
 from src.wordrecognition.nn.RnnForWord import RnnForWord
 import matplotlib.pyplot as plt
 from keras.preprocessing.text import Tokenizer
 import pandas
 from keras.optimizers import SGD
 
-
 embedding_vector_length = 100
 
 df = pandas.DataFrame()
-df = pandas.read_csv('/Users/pavel/PycharmProjects/NeuralNetworkWithTenser/src/wordrecognition/res/imdb_master.csv', encoding='ISO-8859-1')
+df = pandas.read_csv('/Users/pavel/PycharmProjects/NeuralNetworkWithTenser/src/wordrecognition/res/imdb_master.csv',
+                     encoding='ISO-8859-1')
 df.head(3)
 X_train = df.loc[12000: 13000, 'review']
 y_train = df.loc[12000: 13000, 'label']
@@ -39,7 +37,7 @@ X_train_bad = sequence.pad_sequences(X_train_tokens, maxlen=length_max, padding=
 
 optimizer = SGD(lr=0.08, decay=1e-6, momentum=0.9, nesterov=True)
 model = RnnForWord().build(vocab_size=vocabulary_size,
-                            max_review_length=length_max, embedding_vector_length=length_max)
+                           max_review_length=length_max, embedding_vector_length=length_max)
 model.compile(loss='binary_crossentropy', optimizer=optimizer, metrics=['accuracy'])
 history = model.fit(X_train_bad, y_train, epochs=3, batch_size=32)
 
