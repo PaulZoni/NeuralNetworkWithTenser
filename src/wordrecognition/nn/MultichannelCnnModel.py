@@ -1,4 +1,4 @@
-from keras.layers import Input, Embedding, MaxPooling1D, Conv1D, Dense, Concatenate, Dropout, Flatten, concatenate
+from keras.layers import Input, Embedding, MaxPooling1D, Conv1D, Dense, Dropout, Flatten, concatenate
 from keras.models import Model
 
 

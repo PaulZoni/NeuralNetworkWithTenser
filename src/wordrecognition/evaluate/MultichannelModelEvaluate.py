@@ -1,6 +1,6 @@
 from src.wordrecognition.textpreparing import Tools
 from src.wordrecognition.nn.MultichannelCnnModel import MultichannelCnnModel
-import matplotlib.pyplot as pyplot
+
 
 save_modal = '/Users/pavel/PycharmProjects/NeuralNetworkWithTenser/src/wordrecognition/savemodal/MultichannelCnnModel.h5'
 vocab_save_path = '/Users/pavel/PycharmProjects/NeuralNetworkWithTenser/src/wordrecognition/res/vocab.txt'

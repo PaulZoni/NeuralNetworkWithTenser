@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib as mpl
-mpl.rcParams['figure.figsize'] = (10,10)
+
+mpl.rcParams['figure.figsize'] = (10, 10)
 mpl.rcParams['axes.grid'] = False
 import numpy as np
 from PIL import Image
@@ -20,8 +21,8 @@ tf.enable_eager_execution()
 print("Eager execution: {}".format(tf.executing_eagerly()))
 
 # Set up some global values here
-content_path = '/Users/pavel/PycharmProjects/NeuralNetworkWithTenser/src/neuralstyle/image/IMG_20190323_112221.jpg'
-style_path = '/Users/pavel/PycharmProjects/NeuralNetworkWithTenser/src/neuralstyle/image/starry_night_crop.jpg'
+content_path = '/Users/pavel/PycharmProjects/NeuralNetworkWithTenser/src/neuralstyle/image/I.jpg'
+style_path = '/Users/pavel/PycharmProjects/NeuralNetworkWithTenser/src/neuralstyle/image/horse.jpg'
 
 
 def load_img(path_to_img):
@@ -49,7 +50,7 @@ def imshow(img, title=None):
     plt.imshow(out)
 
 
-plt.figure(figsize=(10,10))
+plt.figure(figsize=(10, 10))
 
 content = load_img(content_path).astype('uint8')
 style = load_img(style_path).astype('uint8')
@@ -86,6 +87,7 @@ def deprocess_img(processed_img):
     x = np.clip(x, 0, 255).astype('uint8')
     return x
 
+
 # Content layer where will pull our feature maps
 content_layers = ['block5_conv2']
 
@@ -95,23 +97,13 @@ style_layers = ['block1_conv1',
                 'block3_conv1',
                 'block4_conv1',
                 'block5_conv1'
-               ]
+                ]
 
 num_content_layers = len(content_layers)
 num_style_layers = len(style_layers)
 
 
 def get_model():
-    """ Creates our model with access to intermediate layers.
-
-    This function will load the VGG19 model and access the intermediate layers.
-    These layers will then be used to create a new model that will take input image
-    and return the outputs from these intermediate layers from the VGG model.
-
-    Returns:
-      returns a keras model that takes image inputs and outputs the style and
-        content intermediate layers.
-    """
     # Load our model. We load pretrained VGG, trained on imagenet data
     vgg = tf.keras.applications.vgg19.VGG19(include_top=False, weights='imagenet')
     vgg.trainable = False
@@ -147,20 +139,6 @@ def get_style_loss(base_style, gram_target):
 
 
 def get_feature_representations(model, content_path, style_path):
-    """Helper function to compute our content and style feature representations.
-
-    This function will simply load and preprocess both the content and style
-    images from their path. Then it will feed them through the network to obtain
-    the outputs of the intermediate layers.
-
-    Arguments:
-      model: The model that we are using.
-      content_path: The path to the content image.
-      style_path: The path to the style image
-
-    Returns:
-      returns the style features and the content features.
-    """
     # Load our images in
     content_image = load_and_process_img(content_path)
     style_image = load_and_process_img(style_path)
@@ -176,23 +154,6 @@ def get_feature_representations(model, content_path, style_path):
 
 
 def compute_loss(model, loss_weights, init_image, gram_style_features, content_features):
-    """This function will compute the loss total loss.
-
-    Arguments:
-      model: The model that will give us access to the intermediate layers
-      loss_weights: The weights of each contribution of each loss function.
-        (style weight, content weight, and total variation weight)
-      init_image: Our initial base image. This image is what we are updating with
-        our optimization process. We apply the gradients wrt the loss we are
-        calculating to this image.
-      gram_style_features: Precomputed gram matrices corresponding to the
-        defined style layers of interest.
-      content_features: Precomputed outputs from defined content layers of
-        interest.
-
-    Returns:
-      returns the total loss, style loss, content loss, and total variational loss
-    """
     style_weight, content_weight = loss_weights
 
     # Feed our init image through our model. This will give us the content and
@@ -342,7 +303,7 @@ def show_results(best_img, content_path, style_path, show_large_final=True):
         plt.imshow(best_img)
         plt.title('Output Image')
         plt.show()
-        save_img('newStyle.png', best_img)
+        save_img('horseAndI.png', best_img)
 
 
 show_results(best, content_path, style_path)
