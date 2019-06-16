@@ -21,8 +21,6 @@ def generate_seq(model, mapping, seq_length, seed_text, n_chars):
         encoded = pad_sequences([encoded], maxlen=seq_length, truncating='pre')
         encoded = to_categorical(encoded, num_classes=len(mapping))
         encoded = array(encoded)
-        #encoded = encoded.reshape(1, encoded.shape[0], encoded.shape[1])
-
         yhat = model.predict_classes(encoded, verbose=0)
 
         out_char = ''
