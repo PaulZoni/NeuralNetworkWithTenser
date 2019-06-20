@@ -80,6 +80,16 @@ def clean_doc_v2(doc, vocab):
     return tokens
 
 
+def clean_doc_v3(doc: str):
+    doc = doc.replace('--', ' ')
+    tokens = doc.split()
+    re_punc = re.compile('[%s]' % re.escape(string.punctuation))
+    tokens = [re_punc.sub('', w) for w in tokens]
+    tokens = [word for word in tokens if word.isalpha()]
+    tokens = [w.lower() for w in tokens]
+    return tokens
+
+
 def add_doc_to_vocab(filename, vocab):
     doc = load_doc(filename)
     tokens = clean_doc(doc)
